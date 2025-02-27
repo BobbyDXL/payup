@@ -653,6 +653,29 @@
         .transaction-hash {
             margin-top: 24px;
             display: none;
+            position: relative;
+        }
+
+        .hash-error-message {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--error-color);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            z-index: 100;
+        }
+
+        .hash-error-message.show {
+            opacity: 1;
+            visibility: visible;
         }
 
         .verification-status {
@@ -1528,15 +1551,6 @@
                     console.log('Escrow fee displayed as:', `$${escrowFee.toFixed(2)} worth of ${cryptoName}`);
                 }
             });
-
-            // Add warning for disabled options
-            if (radio.disabled) {
-                radio.parentElement.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    console.log('Disabled cryptocurrency selected');
-                    alert('This cryptocurrency is currently unavailable. Please select USDT BEP20, USDT TRC20, or SOL.');
-                });
-            }
         });
 
         function copyWalletAddress() {
@@ -1602,15 +1616,27 @@
                 return;
             }
 
-            showLoading(button);
-
             if (!isValidTransactionHash(hash, selectedCrypto)) {
                 console.error('Invalid transaction hash format');
-                hideLoading(button);
-                alert('Invalid transaction hash format. Please check and try again.');
+                let hashError = document.querySelector('.hash-error-message');
+                if (!hashError) {
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'hash-error-message';
+                    errorDiv.textContent = 'Invalid Transaction Hash';
+                    document.getElementById('transactionHashForm').appendChild(errorDiv);
+                    hashError = errorDiv;
+                }
+                hashError.classList.add('show');
+                
+                setTimeout(() => {
+                    hashError.classList.remove('show');
+                }, 2000);
+                
+                console.log('Showing invalid hash message');
                 return;
             }
 
+            showLoading(button);
             document.getElementById('transactionHashForm').style.display = 'none';
             document.getElementById('verificationStatus').style.display = 'block';
             document.getElementById('verificationStatus').classList.add('pending');
@@ -1648,7 +1674,7 @@
                 document.querySelectorAll('input[name="cryptoType"]').forEach(radio => {
                     radio.checked = false;
                 });
-                console.log('Reset crypto payment form');
+                console.log('Reset crypto payment');
             }
             
             // Reset card form if going back from payment container
@@ -1664,6 +1690,23 @@
             radio.parentElement.addEventListener('click', function(e) {
                 e.preventDefault();
                 console.log('Disabled payment method selected');
+                
+                const unavailableTag = this.querySelector('.temporary-unavailable');
+                unavailableTag.classList.add('show');
+                
+                console.log('Showing temporary unavailable message');
+                
+                setTimeout(() => {
+                    unavailableTag.classList.remove('show');
+                    console.log('Hiding temporary unavailable message');
+                }, 2000);
+            });
+        });
+
+        document.querySelectorAll('input[name="cryptoType"][disabled]').forEach(radio => {
+            radio.parentElement.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('Disabled cryptocurrency selected');
                 
                 const unavailableTag = this.querySelector('.temporary-unavailable');
                 unavailableTag.classList.add('show');
