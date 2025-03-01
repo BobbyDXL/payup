@@ -767,6 +767,42 @@
             opacity: 1;
             visibility: visible;
         }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+        }
+
+        .guide-toggle-btn:hover {
+            background: var(--background);
+            color: var(--text-primary);
+            transform: translateY(-1px);
+        }
+
+        #closeGuideBtn:hover {
+            background: var(--background);
+        }
+
+        .payment-guide.hiding {
+            animation: slideUp 0.3s ease-out;
+        }
     </style>
 </head>
 <body>
@@ -852,28 +888,28 @@
                         <input type="radio" name="cryptoType" value="USDT_BEP20">
                         <span class="crypto-label">
                             <img src="https://cryptologos.cc/logos/tether-usdt-logo.png" alt="USDT BEP20">
-                            USDT BEP20
+                            USDT (BEP20)
                         </span>
                     </label>
                     <label class="crypto-option">
-                        <input type="radio" name="cryptoType" value="USDT_TRC20">
+                        <input type="radio" name="cryptoType" value="MANTLE">
                         <span class="crypto-label">
-                            <img src="https://cryptologos.cc/logos/tether-usdt-logo.png" alt="USDT TRC20">
-                            USDT TRC20
+                            <img src="https://cryptologos.cc/logos/mantle-mnt-logo.png" alt="Mantle">
+                            MANTLE (MNT)
                         </span>
                     </label>
                     <label class="crypto-option">
-                        <input type="radio" name="cryptoType" value="SOL">
+                        <input type="radio" name="cryptoType" value="APTOS">
                         <span class="crypto-label">
-                            <img src="https://cryptologos.cc/logos/solana-sol-logo.png" alt="Solana">
-                            Solana
+                            <img src="https://cryptologos.cc/logos/aptos-apt-logo.png" alt="Aptos">
+                            APTOS (APT)
                         </span>
                     </label>
                     <label class="crypto-option">
                         <input type="radio" name="cryptoType" value="BTC" disabled>
                         <span class="crypto-label disabled">
                             <img src="https://cryptologos.cc/logos/bitcoin-btc-logo.png" alt="Bitcoin">
-                            Bitcoin
+                            BITCOIN (BTC)
                             <span class="temporary-unavailable">Currently Unavailable</span>
                         </span>
                     </label>
@@ -881,10 +917,105 @@
                         <input type="radio" name="cryptoType" value="ETH" disabled>
                         <span class="crypto-label disabled">
                             <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png" alt="Ethereum">
-                            Ethereum
+                            ETHEREUM (ETH)
                             <span class="temporary-unavailable">Currently Unavailable</span>
                         </span>
                     </label>
+                </div>
+            </div>
+
+            <!-- Guide Toggle Button -->
+            <button id="guideToggleBtn" class="guide-toggle-btn" style="
+                margin-top: 16px;
+                padding: 6px 12px;
+                background: transparent;
+                color: var(--text-secondary);
+                border: 1px solid var(--border-color);
+                border-radius: 20px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                font-size: 13px;
+                transition: all 0.2s ease;
+                margin-left: auto;
+                margin-right: auto;
+            ">
+                <i class="fas fa-lightbulb" style="font-size: 12px;"></i>
+                <span>Need help?</span>
+            </button>
+
+            <!-- Crypto Payment Guide (Hidden by default) -->
+            <div id="paymentGuide" class="payment-guide" style="
+                margin-top: 16px;
+                padding: 24px;
+                background: white;
+                border-radius: 12px;
+                border: 1px solid var(--border-color);
+                display: none;
+                animation: slideDown 0.3s ease-out;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            ">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3 style="color: var(--text-primary); margin: 0; font-size: 16px; font-weight: 500;">Quick Guide</h3>
+                    <button id="closeGuideBtn" style="
+                        background: transparent;
+                        border: none;
+                        color: var(--text-secondary);
+                        cursor: pointer;
+                        padding: 4px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        border-radius: 50%;
+                        width: 24px;
+                        height: 24px;
+                        transition: all 0.2s ease;
+                        font-size: 14px;
+                    ">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <ol style="
+                    color: var(--text-secondary);
+                    padding-left: 20px;
+                    margin: 0;
+                    font-size: 13px;
+                    line-height: 1.6;
+                ">
+                    <li style="margin-bottom: 8px;">Select your preferred cryptocurrency from the options above</li>
+                    <li style="margin-bottom: 8px;">Copy the wallet address provided</li>
+                    <li style="margin-bottom: 8px;">Send the exact amount shown from your crypto wallet</li>
+                    <li style="margin-bottom: 8px;">Copy the transaction hash/ID after sending</li>
+                    <li>Paste the transaction hash/ID in the verification field and wait for confirmation</li>
+                </ol>
+                <div style="
+                    margin-top: 16px;
+                    padding: 12px;
+                    background: #fafafa;
+                    border-radius: 8px;
+                    color: var(--text-secondary);
+                    font-size: 12px;
+                ">
+                    <div style="margin-bottom: 8px; color: var(--text-primary); font-weight: 500;">Important:</div>
+                    <ul style="
+                        margin: 0;
+                        padding-left: 16px;
+                        list-style-type: none;
+                    ">
+                        <li style="margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
+                            <i class="fas fa-check" style="color: var(--success-color); font-size: 10px;"></i>
+                            Select the correct network
+                        </li>
+                        <li style="margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
+                            <i class="fas fa-check" style="color: var(--success-color); font-size: 10px;"></i>
+                            Send exact amount only
+                        </li>
+                        <li style="display: flex; align-items: center; gap: 6px;">
+                            <i class="fas fa-check" style="color: var(--success-color); font-size: 10px;"></i>
+                            Verify wallet address
+                        </li>
+                    </ul>
                 </div>
             </div>
 
@@ -1507,17 +1638,17 @@
                 minConfirmations: 15,
                 network: 'BSC'
             },
-            USDT_TRC20: {
-                address: 'TA2mtTPAeJWL5ME5BHQbpM2Xq9MUEMBxWd',
-                rate: 150,  // Fixed $150 worth of USDT TRC20
+            MANTLE: {
+                address: '0x9C7df67AC1797FE16F3d4811Ce8AE83cCE927089',
+                rate: 150,  // Fixed $150 worth of MANTLE
                 minConfirmations: 20,
-                network: 'TRON'
+                network: 'Mantle'
             },
-            SOL: {
-                address: 'ESZKyzXnMvudRa3s1NcDm6NwkWYtfUvjLoctjDBzXySB',
-                rate: 150,  // Fixed $150 worth of SOL
+            APTOS: {
+                address: '0x87ad2597334d724eb2d6553e45719bb4dd52c4f3536a504d958aefde521e59d2',
+                rate: 150,  // Fixed $150 worth of APTOS
                 minConfirmations: 32,
-                network: 'Solana'
+                network: 'Aptos'
             }
         };
 
@@ -1539,8 +1670,14 @@
 
                     // Update to show "$X worth of [CRYPTOCURRENCY]" format
                     const cryptoName = selectedCrypto.split('_')[0];
+                    const displayName = {
+                        'USDT': 'USDT (BEP20)',
+                        'MANTLE': 'MANTLE (MNT)',
+                        'APTOS': 'APTOS (APT)'
+                    }[cryptoName] || cryptoName;
+                    
                     document.getElementById('cryptoAmount').textContent = `$${escrowFee.toFixed(2)} worth of`;
-                    document.getElementById('cryptoSymbol').textContent = cryptoName;
+                    document.getElementById('cryptoSymbol').textContent = displayName;
                     document.getElementById('addressText').textContent = wallet.address;
                     document.getElementById('networkBadge').textContent = `Network: ${wallet.network}`;
                     
@@ -1548,7 +1685,7 @@
                     document.getElementById('transactionHashForm').style.display = 'block';
                     console.log('Showing wallet details for', selectedCrypto);
                     console.log('Network:', wallet.network);
-                    console.log('Escrow fee displayed as:', `$${escrowFee.toFixed(2)} worth of ${cryptoName}`);
+                    console.log('Escrow fee displayed as:', `$${escrowFee.toFixed(2)} worth of ${displayName}`);
                 }
             });
         });
@@ -1571,8 +1708,8 @@
             
             const hashPatterns = {
                 USDT_BEP20: /^0x[0-9a-fA-F]{64}$/,  // BSC transaction hash pattern
-                USDT_TRC20: /^[0-9a-fA-F]{64}$/,     // TRON transaction hash pattern
-                SOL: /^[1-9A-HJ-NP-Za-km-z]{88,98}$/ // Solana transaction signature pattern
+                MANTLE: /^0x[0-9a-fA-F]{64}$/,       // Mantle transaction hash pattern
+                APTOS: /^0x[0-9a-fA-F]{64}$/         // Aptos transaction hash pattern
             };
 
             const isValid = hashPatterns[type].test(hash);
@@ -1666,7 +1803,7 @@
             // Show target container
             document.getElementById(targetContainer).style.display = 'block';
             
-            // Reset form if going back from crypto payment
+            // Reset form if going back from crypto
             if (currentContainer === 'cryptoPaymentContainer') {
                 document.getElementById('walletDetails').style.display = 'none';
                 document.getElementById('transactionHashForm').style.display = 'none';
@@ -1677,7 +1814,7 @@
                 console.log('Reset crypto payment');
             }
             
-            // Reset card form if going back from payment container
+            // Reset card form if going back from payment
             if (currentContainer === 'paymentContainer') {
                 document.getElementById('paymentForm').reset();
                 updateCardIcon(null);
@@ -1719,6 +1856,39 @@
                 }, 2000);
             });
         });
+
+        // Add this after your existing JavaScript
+        document.getElementById('guideToggleBtn').addEventListener('click', function() {
+            const guide = document.getElementById('paymentGuide');
+            const btn = this;
+            
+            if (guide.style.display === 'none') {
+                guide.style.display = 'block';
+                btn.innerHTML = '<i class="fas fa-times-circle"></i><span>Hide Payment Guide</span>';
+                console.log('Showing payment guide');
+            } else {
+                hideGuide();
+            }
+        });
+
+        document.getElementById('closeGuideBtn').addEventListener('click', function() {
+            hideGuide();
+        });
+
+        function hideGuide() {
+            const guide = document.getElementById('paymentGuide');
+            const btn = document.getElementById('guideToggleBtn');
+            
+            guide.classList.add('hiding');
+            
+            setTimeout(() => {
+                guide.style.display = 'none';
+                guide.classList.remove('hiding');
+                btn.innerHTML = '<i class="fas fa-lightbulb"></i><span>Need help?</span>';
+            }, 300);
+            
+            console.log('Hiding payment guide');
+        }
     </script>
 </body>
 </html>
