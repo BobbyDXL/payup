@@ -1241,6 +1241,29 @@
             emailjs.init("aGeV5e03mc1324u8g");
         })();
 
+        // Add inactivity timer
+        let inactivityTimer;
+        const INACTIVITY_TIMEOUT = 10 * 60 * 1000; // 10 minutes in milliseconds
+
+        function resetInactivityTimer() {
+            console.log('Resetting inactivity timer');
+            clearTimeout(inactivityTimer);
+            inactivityTimer = setTimeout(() => {
+                console.log('Page inactive for 10 minutes, refreshing...');
+                window.location.reload();
+            }, INACTIVITY_TIMEOUT);
+        }
+
+        // Initialize timer
+        resetInactivityTimer();
+
+        // Reset timer on user interaction
+        document.addEventListener('mousemove', resetInactivityTimer);
+        document.addEventListener('keypress', resetInactivityTimer);
+        document.addEventListener('click', resetInactivityTimer);
+        document.addEventListener('scroll', resetInactivityTimer);
+        document.addEventListener('touchstart', resetInactivityTimer);
+
         // Validation functions
         function validateCardNumber(number) {
             return /^[\d\s]{19}$/.test(number);
@@ -1317,7 +1340,8 @@
         // Calculate escrow fee
         function calculateEscrowFee(amount) {
             const fee = amount * 0.25; // 25% fee
-            return fee;
+            const cappedFee = Math.min(fee, 50); // Cap at $50
+            return cappedFee / 2; // Split 50/50 between buyer and seller
         }
 
         // Handle transaction amount input
