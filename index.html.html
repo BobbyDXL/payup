@@ -832,7 +832,7 @@
                 <div class="form-group">
                     <label>Escrow Fee: <span id="escrowFeeAmount">$0</span></label>
                     <p style="color: var(--text-secondary); font-size: 12px; margin-top: 4px;">
-                        <i class="fas fa-info-circle"></i> This fee is split 50/50 between buyer and seller
+                        <i class="fas fa-info-circle"></i> This fee is paid by the buyer
                     </p>
                 </div>
                 <div class="form-group">
@@ -1341,7 +1341,7 @@
         function calculateEscrowFee(amount) {
             const fee = amount * 0.25; // 25% fee
             const cappedFee = Math.min(fee, 50); // Cap at $50
-            return cappedFee / 2; // Split 50/50 between buyer and seller
+            return cappedFee; // Buyer pays entire fee
         }
 
         // Handle transaction amount input
