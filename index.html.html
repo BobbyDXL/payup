@@ -1343,7 +1343,6 @@
                 return null; // Not eligible for escrow
             }
             const fee = amount * 0.05; // 5% fee
-            return Math.min(fee, 50); // Cap at $50
         }
 
         // Handle transaction amount input
