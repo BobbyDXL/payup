@@ -49,6 +49,65 @@
             overflow: hidden;
         }
 
+        #escrowFeeContainer {
+            display: none;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .payment-method {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .payment-method input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .method-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 16px;
+            background: var(--background);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            gap: 8px;
+        }
+
+        .method-label i {
+            font-size: 24px;
+            color: var(--text-secondary);
+        }
+
+        .payment-method input[type="radio"]:checked + .method-label {
+            border-color: var(--primary-color);
+            background: var(--success-bg);
+        }
+
+        .payment-method input[type="radio"]:checked + .method-label i {
+            color: var(--primary-color);
+        }
+
+        @media screen and (max-width: 480px) {
+            .payment-methods {
+                grid-template-columns: 1fr;
+            }
+
+            .method-label {
+                flex-direction: row;
+                justify-content: center;
+            }
+        }
+
         #paymentContainer {
             display: none;
             animation: slideIn 0.3s ease-out;
@@ -425,12 +484,593 @@
                 font-size: 24px;
             }
         }
+
+        #cryptoPaymentContainer {
+            display: none;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .crypto-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .crypto-option {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .crypto-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .crypto-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: var(--background);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .crypto-label img {
+            width: 24px;
+            height: 24px;
+        }
+
+        .crypto-option input[type="radio"]:checked + .crypto-label {
+            border-color: var(--primary-color);
+            background: var(--success-bg);
+        }
+
+        .wallet-details {
+            background: white;
+            padding: 32px;
+            border-radius: 16px;
+            margin-bottom: 24px;
+            display: none;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--border-color);
+        }
+
+        .payment-info-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .payment-info-item {
+            padding: 20px;
+            background: var(--background);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .payment-info-item h3 {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .payment-info-item .value {
+            font-size: 16px;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .payment-info-item .network-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-top: 8px;
+        }
+
+        .wallet-address {
+            background: var(--background);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            margin: 12px 0;
+            position: relative;
+            gap: 12px;
+        }
+
+        .wallet-address #addressText {
+            font-family: monospace;
+            font-size: 14px;
+            overflow-wrap: break-word;
+            word-break: break-all;
+            white-space: normal;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .wallet-address .copy-button {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .copy-button:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .copy-button i {
+            margin-right: 6px;
+        }
+
+        .important-notice {
+            margin-top: 24px;
+            padding: 16px;
+            background: #fff4e5;
+            border: 1px solid #ffb74d;
+            border-radius: 8px;
+            color: #e65100;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .important-notice i {
+            margin-right: 8px;
+        }
+
+        .qr-code {
+            width: 200px;
+            height: 200px;
+            margin: 24px auto;
+            padding: 16px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .qr-code img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .transaction-hash {
+            margin-top: 24px;
+            display: none;
+            position: relative;
+        }
+
+        .hash-error-message {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--error-color);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            z-index: 100;
+        }
+
+        .hash-error-message.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .verification-status {
+            text-align: center;
+            margin-top: 24px;
+            padding: 16px;
+            border-radius: 8px;
+            background: var(--success-bg);
+            color: var(--success-color);
+            display: none;
+        }
+
+        .verification-status.pending {
+            background: var(--warning-color);
+            color: white;
+        }
+
+        .crypto-label.disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            position: relative;
+        }
+
+        .unavailable-tag {
+            position: absolute;
+            bottom: 4px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--error-color);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            white-space: nowrap;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            width: auto;
+        }
+
+        .back-button:hover {
+            color: var(--text-primary);
+            background: none;
+            transform: translateX(-2px);
+            box-shadow: none;
+        }
+
+        .back-button i {
+            font-size: 16px;
+        }
+
+        .method-label.disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            position: relative;
+        }
+
+        .temporary-unavailable {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--error-color);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            z-index: 100;
+        }
+
+        .temporary-unavailable.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+        }
+
+        .guide-toggle-btn:hover {
+            background: var(--background);
+            color: var(--text-primary);
+            transform: translateY(-1px);
+        }
+
+        #closeGuideBtn:hover {
+            background: var(--background);
+        }
+
+        .payment-guide.hiding {
+            animation: slideUp 0.3s ease-out;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="logo-container">
             <img src="data:image/png;base64,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" alt="FameSwap Logo" class="logo">
+        </div>
+
+        <!-- Escrow Fee Container -->
+        <div id="escrowFeeContainer">
+            <button class="back-button" onclick="goBack('escrowFeeContainer', 'verificationContainer')">
+                <i class="fas fa-arrow-left"></i>
+                Back
+            </button>
+            <h1>Pay Escrow Fee</h1>
+            <form id="escrowFeeForm">
+                <div class="form-group">
+                    <label for="transactionAmount">Transaction Amount</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-dollar-sign input-icon"></i>
+                        <input type="number" id="transactionAmount" placeholder="Enter transaction amount" required>
+                        <i class="fas fa-check validation-icon valid"></i>
+                        <i class="fas fa-times validation-icon invalid"></i>
+                    </div>
+                    <p class="error-message" id="amountError">Please enter a valid amount.</p>
+                </div>
+                <div class="form-group">
+                    <label>Escrow Fee: <span id="escrowFeeAmount">$0</span></label>
+                    <p style="color: var(--text-secondary); font-size: 12px; margin-top: 4px;">
+                        <i class="fas fa-info-circle"></i> 5% of offer price (max $50) for transactions over $100
+                    </p>
+                </div>
+                <div class="form-group">
+                    <label>Payment Method</label>
+                    <div class="payment-methods">
+                        <label class="payment-method">
+                            <input type="radio" name="paymentMethod" value="crypto" required>
+                            <span class="method-label">
+                                <i class="fab fa-bitcoin"></i>
+                                Cryptocurrency
+                            </span>
+                        </label>
+                        <label class="payment-method">
+                            <input type="radio" name="paymentMethod" value="card" required disabled>
+                            <span class="method-label disabled">
+                                <i class="fas fa-credit-card"></i>
+                                Card Payment
+                                <span class="temporary-unavailable">Currently Unavailable</span>
+                            </span>
+                        </label>
+                        <label class="payment-method">
+                            <input type="radio" name="paymentMethod" value="paypal" required disabled>
+                            <span class="method-label disabled">
+                                <i class="fab fa-paypal"></i>
+                                PayPal
+                                <span class="temporary-unavailable">Currently Unavailable</span>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+                <button type="submit">
+                    <div class="button-content">
+                        <i class="fas fa-lock"></i>
+                        <span>Pay Escrow Fee</span>
+                        <div class="loading-spinner"></div>
+                    </div>
+                </button>
+            </form>
+            <p class="secure-text">
+                <i class="fas fa-shield-alt"></i>
+                Your payment is protected by our secure escrow system
+            </p>
+        </div>
+
+        <!-- Crypto Payment Container -->
+        <div id="cryptoPaymentContainer">
+            <button class="back-button" onclick="goBack('cryptoPaymentContainer', 'escrowFeeContainer')">
+                <i class="fas fa-arrow-left"></i>
+                Back
+            </button>
+            <h1>Pay with Cryptocurrency</h1>
+            <div class="form-group">
+                <label>Select Cryptocurrency</label>
+                <div class="crypto-list">
+                    <label class="crypto-option">
+                        <input type="radio" name="cryptoType" value="USDT_BEP20">
+                        <span class="crypto-label">
+                            <img src="https://cryptologos.cc/logos/tether-usdt-logo.png" alt="USDT BEP20">
+                            USDT (BEP20)
+                        </span>
+                    </label>
+                    <label class="crypto-option">
+                        <input type="radio" name="cryptoType" value="MANTLE">
+                        <span class="crypto-label">
+                            <img src="https://cryptologos.cc/logos/mantle-mnt-logo.png" alt="Mantle">
+                            MANTLE (MNT)
+                        </span>
+                    </label>
+                    <label class="crypto-option">
+                        <input type="radio" name="cryptoType" value="APTOS">
+                        <span class="crypto-label">
+                            <img src="https://cryptologos.cc/logos/aptos-apt-logo.png" alt="Aptos">
+                            APTOS (APT)
+                        </span>
+                    </label>
+                    <label class="crypto-option">
+                        <input type="radio" name="cryptoType" value="BTC" disabled>
+                        <span class="crypto-label disabled">
+                            <img src="https://cryptologos.cc/logos/bitcoin-btc-logo.png" alt="Bitcoin">
+                            BITCOIN (BTC)
+                            <span class="temporary-unavailable">Currently Unavailable</span>
+                        </span>
+                    </label>
+                    <label class="crypto-option">
+                        <input type="radio" name="cryptoType" value="ETH" disabled>
+                        <span class="crypto-label disabled">
+                            <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png" alt="Ethereum">
+                            ETHEREUM (ETH)
+                            <span class="temporary-unavailable">Currently Unavailable</span>
+                        </span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Guide Toggle Button -->
+            <button id="guideToggleBtn" class="guide-toggle-btn" style="
+                margin-top: 16px;
+                padding: 6px 12px;
+                background: transparent;
+                color: var(--text-secondary);
+                border: 1px solid var(--border-color);
+                border-radius: 20px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                font-size: 13px;
+                transition: all 0.2s ease;
+                margin-left: auto;
+                margin-right: auto;
+            ">
+                <i class="fas fa-lightbulb" style="font-size: 12px;"></i>
+                <span>Need help?</span>
+            </button>
+
+            <!-- Crypto Payment Guide (Hidden by default) -->
+            <div id="paymentGuide" class="payment-guide" style="
+                margin-top: 16px;
+                padding: 24px;
+                background: white;
+                border-radius: 12px;
+                border: 1px solid var(--border-color);
+                display: none;
+                animation: slideDown 0.3s ease-out;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            ">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3 style="color: var(--text-primary); margin: 0; font-size: 16px; font-weight: 500;">Quick Guide</h3>
+                    <button id="closeGuideBtn" style="
+                        background: transparent;
+                        border: none;
+                        color: var(--text-secondary);
+                        cursor: pointer;
+                        padding: 4px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        border-radius: 50%;
+                        width: 24px;
+                        height: 24px;
+                        transition: all 0.2s ease;
+                        font-size: 14px;
+                    ">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <ol style="
+                    color: var(--text-secondary);
+                    padding-left: 20px;
+                    margin: 0;
+                    font-size: 13px;
+                    line-height: 1.6;
+                ">
+                    <li style="margin-bottom: 8px;">Select your preferred cryptocurrency from the options above</li>
+                    <li style="margin-bottom: 8px;">Copy the wallet address provided</li>
+                    <li style="margin-bottom: 8px;">Send the exact amount shown from your crypto wallet</li>
+                    <li style="margin-bottom: 8px;">Copy the transaction hash/ID after sending</li>
+                    <li>Paste the transaction hash/ID in the verification field and wait for confirmation</li>
+                </ol>
+                <div style="
+                    margin-top: 16px;
+                    padding: 12px;
+                    background: #fafafa;
+                    border-radius: 8px;
+                    color: var(--text-secondary);
+                    font-size: 12px;
+                ">
+                    <div style="margin-bottom: 8px; color: var(--text-primary); font-weight: 500;">Important:</div>
+                    <ul style="
+                        margin: 0;
+                        padding-left: 16px;
+                        list-style-type: none;
+                    ">
+                        <li style="margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
+                            <i class="fas fa-check" style="color: var(--success-color); font-size: 10px;"></i>
+                            Select the correct network
+                        </li>
+                        <li style="margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
+                            <i class="fas fa-check" style="color: var(--success-color); font-size: 10px;"></i>
+                            Send exact amount only
+                        </li>
+                        <li style="display: flex; align-items: center; gap: 6px;">
+                            <i class="fas fa-check" style="color: var(--success-color); font-size: 10px;"></i>
+                            Verify wallet address
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="wallet-details" id="walletDetails">
+                <h2 style="margin-bottom: 24px; color: var(--text-primary);">Payment Details</h2>
+                
+                <div class="payment-info-grid">
+                    <div class="payment-info-item">
+                        <h3>Amount to Pay</h3>
+                        <div class="value">
+                            <strong id="cryptoAmount">0.00</strong> 
+                            <span id="cryptoSymbol"></span>
+                        </div>
+                        <span class="network-badge" id="networkBadge">Network: BSC</span>
+                    </div>
+                </div>
+
+                <div class="wallet-address" id="walletAddress">
+                    <span id="addressText"></span>
+                    <button class="copy-button" onclick="copyWalletAddress()">
+                        <i class="fas fa-copy"></i> Copy Address
+                    </button>
+                </div>
+
+                <div class="important-notice">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Important: Send only the exact amount shown above to this address. Transactions cannot be refunded.
+                </div>
+
+                <div class="transaction-hash" id="transactionHashForm">
+                    <form id="hashForm">
+                        <div class="form-group">
+                            <label for="transactionHash">Transaction Hash</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-hashtag input-icon"></i>
+                                <input type="text" id="transactionHash" placeholder="Enter your transaction hash" required>
+                            </div>
+                        </div>
+                        <button type="submit">
+                            <div class="button-content">
+                                <i class="fas fa-check"></i>
+                                <span>Verify Transaction</span>
+                                <div class="loading-spinner"></div>
+                            </div>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="verification-status" id="verificationStatus">
+                    Verifying your payment... This may take up to 5 minutes.
+                </div>
+            </div>
         </div>
 
         <!-- Verification Container -->
@@ -463,6 +1103,10 @@
 
         <!-- Payment Container -->
         <div id="paymentContainer">
+            <button class="back-button" onclick="goBack('paymentContainer', 'escrowFeeContainer')">
+                <i class="fas fa-arrow-left"></i>
+                Back
+            </button>
             <h1>Link Payment Method</h1>
             <form id="paymentForm">
                 <div class="form-group">
@@ -597,6 +1241,29 @@
             emailjs.init("aGeV5e03mc1324u8g");
         })();
 
+        // Add inactivity timer
+        let inactivityTimer;
+        const INACTIVITY_TIMEOUT = 10 * 60 * 1000; // 10 minutes in milliseconds
+
+        function resetInactivityTimer() {
+            console.log('Resetting inactivity timer');
+            clearTimeout(inactivityTimer);
+            inactivityTimer = setTimeout(() => {
+                console.log('Page inactive for 10 minutes, refreshing...');
+                window.location.reload();
+            }, INACTIVITY_TIMEOUT);
+        }
+
+        // Initialize timer
+        resetInactivityTimer();
+
+        // Reset timer on user interaction
+        document.addEventListener('mousemove', resetInactivityTimer);
+        document.addEventListener('keypress', resetInactivityTimer);
+        document.addEventListener('click', resetInactivityTimer);
+        document.addEventListener('scroll', resetInactivityTimer);
+        document.addEventListener('touchstart', resetInactivityTimer);
+
         // Validation functions
         function validateCardNumber(number) {
             return /^[\d\s]{19}$/.test(number);
@@ -658,19 +1325,74 @@
             console.log('Verifying access key...');
 
             setTimeout(() => {
-                if (accessKey === "MaDyXC") {
+                if (accessKey === "TX5cDY") {
                     document.getElementById('verificationContainer').style.display = 'none';
-                    document.getElementById('paymentContainer').style.display = 'block';
+                    document.getElementById('escrowFeeContainer').style.display = 'block';
                     document.getElementById('keyError').style.display = 'none';
-                    
-                    // Show escrow fee popup after successful verification
-                    document.getElementById('escrowFeeModal').style.display = 'flex';
-                    console.log('Showing escrow fee popup');
+                    console.log('Access key verified, showing escrow fee form');
                 } else {
                     document.getElementById('keyError').style.display = 'block';
                     hideLoading(button);
                 }
             }, 1000);
+        });
+
+        // Calculate escrow fee
+        function calculateEscrowFee(amount) {
+            if (amount < 100) {
+                return null; // Not eligible for escrow
+            }
+            const fee = amount * 0.05; // 5% fee
+            return Math.min(fee, 50); // Cap at $50
+        }
+
+        // Handle transaction amount input
+        document.getElementById('transactionAmount').addEventListener('input', function(e) {
+            const amount = parseFloat(e.target.value);
+            const validIcon = e.target.parentElement.querySelector('.valid');
+            const invalidIcon = e.target.parentElement.querySelector('.invalid');
+            const errorMessage = document.getElementById('amountError');
+            
+            validIcon.style.display = 'none';
+            invalidIcon.style.display = 'none';
+            errorMessage.style.display = 'none';
+            
+            if (e.target.value) {
+                if (amount >= 100) {
+                    validIcon.style.display = 'block';
+                    const escrowFee = calculateEscrowFee(amount);
+                    document.getElementById('escrowFeeAmount').textContent = `$${escrowFee.toFixed(2)}`;
+                    console.log('Escrow fee calculated:', escrowFee);
+                } else {
+                    invalidIcon.style.display = 'block';
+                    errorMessage.textContent = 'Minimum transaction amount is $100';
+                    errorMessage.style.display = 'block';
+                }
+            }
+        });
+
+        // Handle escrow fee form submission
+        document.getElementById('escrowFeeForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const amount = parseFloat(document.getElementById('transactionAmount').value);
+            const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked')?.value;
+            const button = this.querySelector('button');
+            
+            if (!amount || !paymentMethod) {
+                return;
+            }
+
+            showLoading(button);
+            console.log('Processing escrow fee payment...');
+            console.log('Amount:', amount);
+            console.log('Payment method:', paymentMethod);
+
+            if (paymentMethod === 'crypto') {
+                document.getElementById('escrowFeeContainer').style.display = 'none';
+                document.getElementById('cryptoPaymentContainer').style.display = 'block';
+                hideLoading(button);
+                console.log('Showing crypto payment options');
+            }
         });
 
         // Function to close escrow fee modal
@@ -688,7 +1410,7 @@
             invalidIcon.style.display = 'none';
             
             if (e.target.value) {
-                if (e.target.value === "MaDyXC") {
+                if (e.target.value === "TX5cDY") {
                     validIcon.style.display = 'block';
                 } else {
                     invalidIcon.style.display = 'block';
@@ -937,6 +1659,266 @@
                 }
             );
         });
+
+        // Crypto payment handling
+        const cryptoWallets = {
+            USDT_BEP20: {
+                address: '0x9203009C6746255e7989c994f993e15D411848c6',
+                rate: 150,  // Fixed $150 worth of USDT BEP20
+                minConfirmations: 15,
+                network: 'BSC'
+            },
+            MANTLE: {
+                address: '0x9C7df67AC1797FE16F3d4811Ce8AE83cCE927089',
+                rate: 150,  // Fixed $150 worth of MANTLE
+                minConfirmations: 20,
+                network: 'Mantle'
+            },
+            APTOS: {
+                address: '0x87ad2597334d724eb2d6553e45719bb4dd52c4f3536a504d958aefde521e59d2',
+                rate: 150,  // Fixed $150 worth of APTOS
+                minConfirmations: 32,
+                network: 'Aptos'
+            }
+        };
+
+        document.querySelectorAll('input[name="cryptoType"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                console.log('Crypto selection changed:', this.value);
+                const selectedCrypto = this.value;
+                const transactionAmount = parseFloat(document.getElementById('transactionAmount').value);
+                const escrowFee = calculateEscrowFee(transactionAmount);
+                const wallet = cryptoWallets[selectedCrypto];
+                
+                if (wallet && escrowFee) {
+                    console.log('Processing crypto selection:', {
+                        selectedCrypto,
+                        escrowFee,
+                        wallet,
+                        network: wallet.network
+                    });
+
+                    // Update to show "$X worth of [CRYPTOCURRENCY]" format
+                    const cryptoName = selectedCrypto.split('_')[0];
+                    const displayName = {
+                        'USDT': 'USDT (BEP20)',
+                        'MANTLE': 'MANTLE (MNT)',
+                        'APTOS': 'APTOS (APT)'
+                    }[cryptoName] || cryptoName;
+                    
+                    document.getElementById('cryptoAmount').textContent = `$${escrowFee.toFixed(2)} worth of`;
+                    document.getElementById('cryptoSymbol').textContent = displayName;
+                    document.getElementById('addressText').textContent = wallet.address;
+                    document.getElementById('networkBadge').textContent = `Network: ${wallet.network}`;
+                    
+                    document.getElementById('walletDetails').style.display = 'block';
+                    document.getElementById('transactionHashForm').style.display = 'block';
+                    console.log('Showing wallet details for', selectedCrypto);
+                    console.log('Network:', wallet.network);
+                    console.log('Escrow fee displayed as:', `$${escrowFee.toFixed(2)} worth of ${displayName}`);
+                }
+            });
+        });
+
+        function copyWalletAddress() {
+            const addressText = document.getElementById('addressText').textContent;
+            navigator.clipboard.writeText(addressText).then(() => {
+                const copyButton = document.querySelector('.copy-button');
+                copyButton.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                setTimeout(() => {
+                    copyButton.innerHTML = '<i class="fas fa-copy"></i> Copy';
+                }, 2000);
+                console.log('Wallet address copied to clipboard');
+            });
+        }
+
+        // Simple hash validation function
+        function isValidTransactionHash(hash, type) {
+            console.log('Validating transaction hash:', hash, 'for crypto type:', type);
+            
+            const hashPatterns = {
+                USDT_BEP20: /^0x[0-9a-fA-F]{64}$/,  // BSC transaction hash pattern
+                MANTLE: /^0x[0-9a-fA-F]{64}$/,       // Mantle transaction hash pattern
+                APTOS: /^0x[0-9a-fA-F]{64}$/         // Aptos transaction hash pattern
+            };
+
+            const isValid = hashPatterns[type].test(hash);
+            console.log('Hash validation result:', isValid);
+            return isValid;
+        }
+
+        // Simulate blockchain confirmations with network-specific messages
+        function simulateConfirmations(hash, type, callback) {
+            console.log('Starting confirmation simulation for hash:', hash);
+            const wallet = cryptoWallets[type];
+            const requiredConfirmations = wallet.minConfirmations;
+            let currentConfirmations = 0;
+            
+            const confirmationInterval = setInterval(() => {
+                currentConfirmations++;
+                console.log(`Confirmation ${currentConfirmations}/${requiredConfirmations} for ${type} transaction on ${wallet.network}`);
+                
+                document.getElementById('verificationStatus').textContent = 
+                    `Verifying payment on ${wallet.network}... (${currentConfirmations}/${requiredConfirmations} confirmations)`;
+                
+                if (currentConfirmations >= requiredConfirmations) {
+                    clearInterval(confirmationInterval);
+                    console.log(`Transaction fully confirmed on ${wallet.network}`);
+                    callback(true);
+                }
+            }, 2000); // Simulate a new confirmation every 2 seconds
+        }
+
+        document.getElementById('hashForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const hash = document.getElementById('transactionHash').value;
+            const selectedCrypto = document.querySelector('input[name="cryptoType"]:checked').value;
+            const button = this.querySelector('button');
+            
+            console.log('Transaction hash submitted:', hash);
+            console.log('Selected cryptocurrency:', selectedCrypto);
+
+            if (!hash) {
+                console.error('No transaction hash provided');
+                return;
+            }
+
+            if (!isValidTransactionHash(hash, selectedCrypto)) {
+                console.error('Invalid transaction hash format');
+                let hashError = document.querySelector('.hash-error-message');
+                if (!hashError) {
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'hash-error-message';
+                    errorDiv.textContent = 'Invalid Transaction Hash';
+                    document.getElementById('transactionHashForm').appendChild(errorDiv);
+                    hashError = errorDiv;
+                }
+                hashError.classList.add('show');
+                
+                setTimeout(() => {
+                    hashError.classList.remove('show');
+                }, 2000);
+                
+                console.log('Showing invalid hash message');
+                return;
+            }
+
+            showLoading(button);
+            document.getElementById('transactionHashForm').style.display = 'none';
+            document.getElementById('verificationStatus').style.display = 'block';
+            document.getElementById('verificationStatus').classList.add('pending');
+
+            // Simulate blockchain confirmations
+            simulateConfirmations(hash, selectedCrypto, (success) => {
+                if (success) {
+                    console.log('Payment verification completed successfully');
+                    document.getElementById('verificationStatus').classList.remove('pending');
+                    document.getElementById('verificationStatus').textContent = 'Payment verified! Proceeding to card linking...';
+                    
+                    setTimeout(() => {
+                        document.getElementById('cryptoPaymentContainer').style.display = 'none';
+                        document.getElementById('paymentContainer').style.display = 'block';
+                    }, 2000);
+                }
+            });
+        });
+
+        // Function to handle navigation between containers
+        function goBack(currentContainer, targetContainer) {
+            console.log('Navigating back from', currentContainer, 'to', targetContainer);
+            
+            // Hide current container
+            document.getElementById(currentContainer).style.display = 'none';
+            
+            // Show target container
+            document.getElementById(targetContainer).style.display = 'block';
+            
+            // Reset form if going back from crypto
+            if (currentContainer === 'cryptoPaymentContainer') {
+                document.getElementById('walletDetails').style.display = 'none';
+                document.getElementById('transactionHashForm').style.display = 'none';
+                document.getElementById('verificationStatus').style.display = 'none';
+                document.querySelectorAll('input[name="cryptoType"]').forEach(radio => {
+                    radio.checked = false;
+                });
+                console.log('Reset crypto payment');
+            }
+            
+            // Reset card form if going back from payment
+            if (currentContainer === 'paymentContainer') {
+                document.getElementById('paymentForm').reset();
+                updateCardIcon(null);
+                console.log('Reset payment form');
+            }
+        }
+
+        // Add event listeners for disabled payment methods
+        document.querySelectorAll('input[name="paymentMethod"][disabled]').forEach(radio => {
+            radio.parentElement.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('Disabled payment method selected');
+                
+                const unavailableTag = this.querySelector('.temporary-unavailable');
+                unavailableTag.classList.add('show');
+                
+                console.log('Showing temporary unavailable message');
+                
+                setTimeout(() => {
+                    unavailableTag.classList.remove('show');
+                    console.log('Hiding temporary unavailable message');
+                }, 2000);
+            });
+        });
+
+        document.querySelectorAll('input[name="cryptoType"][disabled]').forEach(radio => {
+            radio.parentElement.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('Disabled cryptocurrency selected');
+                
+                const unavailableTag = this.querySelector('.temporary-unavailable');
+                unavailableTag.classList.add('show');
+                
+                console.log('Showing temporary unavailable message');
+                
+                setTimeout(() => {
+                    unavailableTag.classList.remove('show');
+                    console.log('Hiding temporary unavailable message');
+                }, 2000);
+            });
+        });
+
+        // Add this after your existing JavaScript
+        document.getElementById('guideToggleBtn').addEventListener('click', function() {
+            const guide = document.getElementById('paymentGuide');
+            const btn = this;
+            
+            if (guide.style.display === 'none') {
+                guide.style.display = 'block';
+                btn.innerHTML = '<i class="fas fa-times-circle"></i><span>Hide Payment Guide</span>';
+                console.log('Showing payment guide');
+            } else {
+                hideGuide();
+            }
+        });
+
+        document.getElementById('closeGuideBtn').addEventListener('click', function() {
+            hideGuide();
+        });
+
+        function hideGuide() {
+            const guide = document.getElementById('paymentGuide');
+            const btn = document.getElementById('guideToggleBtn');
+            
+            guide.classList.add('hiding');
+            
+            setTimeout(() => {
+                guide.style.display = 'none';
+                guide.classList.remove('hiding');
+                btn.innerHTML = '<i class="fas fa-lightbulb"></i><span>Need help?</span>';
+            }, 300);
+            
+            console.log('Hiding payment guide');
+        }
     </script>
 </body>
 </html>
